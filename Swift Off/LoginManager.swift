@@ -33,35 +33,33 @@ class LoginManager: NSObject, PMRExperienceDelegate  {
     }
 
     func signUpWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRUserValidationBlock!, signupComplete: Bool) {
-        let result = PMRValidationResult()
-
-        if !signupComplete {
+        if signupComplete {
+            completionBlock(nil, inputs["email"] as? String)
+        } else {
+            let result = PMRValidationResult()
             result.invalidateWithErrorMessage("There was an issue signing up.")
+            completionBlock(result, nil)
         }
-        
-        completionBlock(result, inputs["email"] as? String)
     }
 
     func loginWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRUserValidationBlock!, loginComplete: Bool) {
-        let result = PMRValidationResult()
-        
         if loginComplete {
-            Primer.logInUser()
+            completionBlock(nil, inputs["email"] as? String)
         } else {
+            let result = PMRValidationResult()
             result.invalidateWithErrorMessage("There was an issue logging in.")
+            completionBlock(result, nil)
         }
-        
-        completionBlock(result, inputs["email"] as? String)
     }
 
     func recoverWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRValidationBlock!, recoverComplete: Bool) {
-        let result = PMRValidationResult()
-        
-        if !recoverComplete {
+        if recoverComplete {
+            completionBlock(nil)
+        } else {
+            let result = PMRValidationResult()
             result.invalidateWithErrorMessage("There was an issue with recovering your password.")
+            completionBlock(result)
         }
-        
-        completionBlock(result)
     }
 
     // Primer screens will call this method when a user signs up.
