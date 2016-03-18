@@ -10,8 +10,8 @@ import UIKit
 import Material
 import Firebase
 
-// Be sure to change this URL. Your app will crash otherwise.
-let FIREBASE_BASE_URL = "https://<UNIQUE_FIREBASE_TOKEN>.firebaseio.com"
+// Be sure to change this URL for your real app.
+let FIREBASE_BASE_URL = "https://swift-off.firebaseio.com"
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -25,10 +25,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Presents the Primer Flow
-        Primer.sharedInstance().appLaunchComplete()
         prepareNavigationBarViewExample()
         fetchAndWatchFireBaseItems()
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        // Presents the Primer Flow
+        Primer.presentExperience()
     }
 
     // General tasks to prepare view to be shown.

@@ -4,12 +4,7 @@ PODS:
   - Dollar (5.0.0)
   - Firebase (2.5.1)
   - Material (1.32.2)
-  - Primer (2.4.1)
-  - Rollbar (0.1.5)
-  - Segment-Wootric (0.1.5):
-    - Analytics (~> 3.0.1-alpha)
-    - WootricSDK
-  - WootricSDK (0.4.8)
+  - PrimerBeta (3.0.0-beta.2)
 
 DEPENDENCIES:
   - Alamofire (~> 3.0)
@@ -17,9 +12,7 @@ DEPENDENCIES:
   - Dollar
   - Firebase (>= 2.5.0)
   - Material (= 1.32.2)
-  - Primer
-  - Rollbar (~> 0.1.5)
-  - Segment-Wootric
+  - PrimerBeta (= 3.0.0-beta.2)
 
 SPEC CHECKSUMS:
   Alamofire: 4da478599fccddff361205c8929333d7fe18dceb
@@ -27,9 +20,6 @@ SPEC CHECKSUMS:
   Dollar: 310893dd6b3799b9b155e3deb61a0492987e4d03
   Firebase: 3565ea88b830f28f2c77ecc524622bc71a20d085
   Material: c2752a84929229e904dc4b131f3564722ed22498
-  Primer: 49e42d8ccd276dce1ef432361320505a289bdb5c
-  Rollbar: 6b4be007d57f434cd48f7cce52862013c6bd64cb
-  Segment-Wootric: d6c57a62d67502ed6ec562c4f1d3bbe3bf93e8a3
-  WootricSDK: a1b365ff5a58c292a48648882912a27acc201625
+  PrimerBeta: 1fb9b291290502c1db949f320b43f99b25f8c686
 
 COCOAPODS: 0.39.0

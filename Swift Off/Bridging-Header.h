@@ -6,4 +6,3 @@
 #import <Primer/Primer.h>
 #import <Firebase/Firebase.h>
 #import <SystemConfiguration/SystemConfiguration.h>
-#import <Rollbar/Rollbar.h>

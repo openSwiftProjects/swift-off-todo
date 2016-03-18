@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-class LoginManager: NSObject, PMROnboardDelegate  {
+class LoginManager: NSObject, PMRExperienceDelegate  {
     let fireBaseRef: Firebase
 
     override init() {
@@ -26,105 +26,89 @@ class LoginManager: NSObject, PMROnboardDelegate  {
 
     func logoutUser() {
         // Log user out of Primer and show the Primer welcome screens again for user to signup or login
-        Primer.sharedInstance().logoutUser()
-        Primer.sharedInstance().showLogoutScreen()
+        Primer.logOutUser()
+        Primer.presentExperience()
 
         self.fireBaseRef.unauth();
     }
 
-    func signUpWithInputsPrimer(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!, signupComplete: Bool) {
-        let result = PMRValidityResult()
+    func signUpWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRUserValidationBlock!, signupComplete: Bool) {
+        let result = PMRValidationResult()
 
-        if signupComplete {
-            result.isValid = true
-            // Important to allow your users to use multiple devices
-            result.userID = inputs["email"] as! String
-        } else {
-            result.isValid = false
-            result.errorMessage = "There was an issue signing up."
+        if !signupComplete {
+            result.invalidateWithErrorMessage("There was an issue signing up.")
         }
-
-        completionBlock(result)
+        
+        completionBlock(result, inputs["email"] as? String)
     }
 
-    func loginWithInputsPrimer(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!, loginComplete: Bool) {
-        let result = PMRValidityResult()
-
+    func loginWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRUserValidationBlock!, loginComplete: Bool) {
+        let result = PMRValidationResult()
+        
         if loginComplete {
-            result.isValid = true
-            // Important to allow your users to use multiple devices
-            result.userID = inputs["email"] as! String
+            Primer.logInUser()
         } else {
-            result.isValid = false
-            result.errorMessage = "There was an issue logging in."
+            result.invalidateWithErrorMessage("There was an issue logging in.")
         }
+        
+        completionBlock(result, inputs["email"] as? String)
+    }
 
+    func recoverWithInputsPrimer(inputs: [String : AnyObject]!, completionBlock: PMRValidationBlock!, recoverComplete: Bool) {
+        let result = PMRValidationResult()
+        
+        if !recoverComplete {
+            result.invalidateWithErrorMessage("There was an issue with recovering your password.")
+        }
+        
         completionBlock(result)
     }
 
-    func recoverWithInputsPrimer(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!, recoverComplete: Bool) {
-        let result = PMRValidityResult()
-
-        if recoverComplete {
-            result.isValid = true
-        } else {
-            result.isValid = false
-            result.errorMessage = "There was an issue with recovering your password."
-        }
-
-        completionBlock(result)
-    }
-
-
-    // Our sign up screens with Primer will call this method on sign up.
-    func signupWithInputs(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!) {
-        let email = inputs["email"] as? String
-        let password = inputs["password"] as? String
-
+    // Primer screens will call this method when a user signs up.
+    func signUpWithFields(fields: [String : AnyObject], completion: PMRUserValidationBlock) {
+        let email = fields["email"] as? String
+        let password = fields["password"] as? String
+        
         // Sign up with Firebase
         self.fireBaseRef.createUser(email, password: password,
             withValueCompletionBlock: { error, result in
                 if error != nil {
                     // There was an error creating the firebase account
-                    self.signUpWithInputsPrimer(inputs, completionBlock: completionBlock, signupComplete: false)
-                    print(error)
-                    print("FB signup error")
+                    self.signUpWithInputsPrimer(fields, completionBlock: completion, signupComplete: false)
                 } else {
                     // We are now logged in
-                    let uid = result["uid"] as? String
-                    self.signUpWithInputsPrimer(inputs, completionBlock: completionBlock, signupComplete: true)
-                    print("Successfully created FB user account with uid: \(uid)")
+                    self.signUpWithInputsPrimer(fields, completionBlock: completion, signupComplete: true)
                 }
         })
     }
 
-    // Our Primer sign up screens will call this method when a user logs in with email and password.
-    func loginWithInputs(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!) {
-        let email = inputs["email"] as? String
-        let password = inputs["password"] as? String
+    // Primer screens will call this method when a user logs in with email and password.
+    func logInWithFields(fields: [String : AnyObject], completion: PMRUserValidationBlock) {
+        let email = fields["email"] as? String
+        let password = fields["password"] as? String
         
         self.fireBaseRef.authUser(email, password: password,
             withCompletionBlock: { error, authData in
                 if error != nil {
                     // There was an error logging in to this account
-                    self.loginWithInputsPrimer(inputs, completionBlock: completionBlock, loginComplete: false)
+                    self.loginWithInputsPrimer(fields, completionBlock: completion, loginComplete: false)
                 } else {
                     // We are now logged in
-                    self.loginWithInputsPrimer(inputs, completionBlock: completionBlock, loginComplete: true)
+                    self.loginWithInputsPrimer(fields, completionBlock: completion, loginComplete: true)
                 }
         })
     }
 
-    // Our Primer password recovery screen will call this method when a user requests a password reset
-    func recoverWithInputs(inputs: [NSObject : AnyObject]!, completionBlock: PMRValidityResultBlock!) {
-        let email = inputs["email"] as? String
+
+    // Primer password recovery screen will call this method when a user requests a password reset
+    func recoverPasswordWithFields(fields: [String : AnyObject], completion: PMRValidationBlock) {
+        let email = fields["email"] as? String
 
         self.fireBaseRef.resetPasswordForUser(email, withCompletionBlock: { error in
             if error != nil {
-                self.recoverWithInputsPrimer(inputs, completionBlock: completionBlock, recoverComplete: false)
+                self.recoverWithInputsPrimer(fields, completionBlock: completion, recoverComplete: false)
             } else {
-                self.recoverWithInputsPrimer(inputs, completionBlock: completionBlock, recoverComplete: true)
+                self.recoverWithInputsPrimer(fields, completionBlock: completion, recoverComplete: true)
             }
         })
-    }
-}
+    }}

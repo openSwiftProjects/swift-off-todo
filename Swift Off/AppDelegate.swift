@@ -8,7 +8,6 @@
 
 import Material
 import UIKit
-import Rollbar
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,20 +15,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // This code initializes Rollbar Crash/Error Reporting
-        // More information can be found at https://rollbar.com
-        // Replace <ROLLBAR_TOKEN> with the token you get after signing up for Rollbar
-        // Rollbar provides a free tier for use
-        Rollbar.initWithAccessToken("<ROLLBAR_TOKEN>")
-        
         // This code initializes Primer's Signup and Login Flows
         // More information can be found at https://goprimer.com
-        // Replace <PRIMER_TOKEN> with the token you get after signing up with Primer
+        // Replace <PRIMER_TOKEN> in your Info.plist file
         // Primer provides a free tier for user
         // More documentation available here: https://docs.goprimer.com
-        Primer.sharedInstance().onboardDelegate = LoginManager.sharedInstance
-        Primer.sharedInstance().requiresLogin = true // ensures users signup or login before accessing app
-        Primer.sharedInstance().registerClientWithToken("<PRIMER_TOKEN>")
+        Primer.setExperienceDelegate(LoginManager.sharedInstance)
+        Primer.setRequiresLogin(true)
+        Primer.start()
         
         // Get view controllers from storyboard
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
