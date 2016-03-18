@@ -109,4 +109,5 @@ class LoginManager: NSObject, PMRExperienceDelegate  {
                 self.recoverWithInputsPrimer(fields, completionBlock: completion, recoverComplete: true)
             }
         })
-    }}
+    }
+}
